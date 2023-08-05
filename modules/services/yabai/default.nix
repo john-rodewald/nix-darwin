@@ -69,6 +69,12 @@ in
       '';
       description = lib.mdDoc "Extra arbitrary configuration to append to the configuration file";
     };
+
+    services.yabai.environmentVariables = mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+      description = lib.mdDoc "Attribute set of environment variables to pass to `yabai`.";
+    };
   };
 
   config = mkMerge [
@@ -83,7 +89,7 @@ in
         serviceConfig.RunAtLoad = true;
         serviceConfig.EnvironmentVariables = {
           PATH = "${cfg.package}/bin:${config.environment.systemPath}";
-        };
+        } // cfg.environmentVariables;
       };
     })
 

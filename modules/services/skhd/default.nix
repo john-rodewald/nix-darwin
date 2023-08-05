@@ -26,6 +26,12 @@ in
       example = "alt + shift - r   :   chunkc quit";
       description = lib.mdDoc "Config to use for {file}`skhdrc`.";
     };
+
+    services.skhd.environmentVariables = mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+      description = lib.mdDoc "Attribute set of environment variables to pass to `skhd`.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -37,6 +43,7 @@ in
 
       serviceConfig.ProgramArguments = [ "${cfg.package}/bin/skhd" ]
         ++ optionals (cfg.skhdConfig != "") [ "-c" "/etc/skhdrc" ];
+      serviceConfig.EnvironmentVariables = cfg.environmentVariables;
       serviceConfig.KeepAlive = true;
       serviceConfig.ProcessType = "Interactive";
     };
